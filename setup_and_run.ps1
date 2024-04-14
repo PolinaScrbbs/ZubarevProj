@@ -14,8 +14,6 @@ python manage.py makemigrations
 
 python manage.py migrate
 
-python manage.py loaddata fixtures/Roles.json
-
-python manage.py createsuperuser
+python manage.py loaddata fixtures/db.json
 
 python manage.py runserver
