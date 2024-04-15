@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Группы</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="accordion" id="groupAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed bg-dark text-light" type="button" data-bs-toggle="collapse" data-bs-target="#groupList" aria-expanded="false" aria-controls="groupList">
+                                Список групп
+                            </button>
+                        </h2>
+                        <div id="groupList" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#groupAccordion">
+                            <div class="accordion-body">
+                                <ul class="list-group list-group-flush">
+                                    {% for group in groups %}
+                                    <li class="list-group-item border-dark">
+                                        <button class="list-group-item-button" type="button" data-group-id="{{ group.id }}" onclick="handleButtonClick('{{ group.title }}', '{{ group.id }}')">
+                                            {{ group.title }}
+                                        </button>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary bg-dark btn-large" id="continueButton">Далее</button>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %} 
+<script src="{% static 'bootstrap/js/bootstrap.popper.min.js' %}"></script>
+<script>
+    function handleButtonClick(groupTitle, groupId) {
+        // Отмечаем выбранную группу серой
+        const buttons = document.querySelectorAll('.list-group-item-button');
+        buttons.forEach(button => {
+            if (button.dataset.groupId === groupId) {
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+            }
+        });
+
+        // Перенаправляем на страницу расписания
+        document.getElementById('continueButton').addEventListener('click', function() {
+            const selectedGroup = document.querySelector('.list-group-item-button.selected');
+            if (selectedGroup) {
+                const selectedGroupId = selectedGroup.dataset.groupId;
+                window.location.href = `/shedule/${groupTitle}`;
+            } else {
+                alert('Выберите группу');
+            }
+        });
+    }
+</script>
+{% endblock scripts %}
+

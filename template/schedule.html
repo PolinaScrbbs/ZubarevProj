@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+
+{% block content %}
+<div class="container p-3 d-flex justify-content-center">
+    <div>
+        <h2 class="text-center mb-4">Расписание на неделю</h2>
+
+        <div class="row">
+            {% for day, lessons in schedules.items %}
+            <div class="col-md-6 {% if day == 'Пятница' %}text-center mx-auto{% endif %}">
+                <h3 class="text-center mb-3">{{ day }}</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Время</th>
+                            <th scope="col">Предмет</th>
+                            <th scope="col">Преподаватель</th>
+                            <th scope="col">Группа</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lesson_number, lesson_time in lesson_times.items %}
+                            {% for lesson in lessons %}
+                                {% if lesson.lesson_number == lesson_number %}
+                                    <tr>
+                                        <td>{{ lesson_time.0 }} - {{ lesson_time.1 }}</td>
+                                        <td>{{ lesson.subject.title }}</td>
+                                        <td>{{ lesson.teacher }}</td>
+                                        <td>{{ lesson.group.title }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+

@@ -1,0 +1,39 @@
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+.accordion-button:focus {
+    z-index: 3;
+    border-color: black; /* Черный цвет обводки */
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.25); /* Черный цвет тени */
+}
+
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    transform: rotate(-180deg);
+}
+.list-group-item-button {
+    background-color: white;
+    border: none; /* Убираем границу */
+    outline: none; /* Убираем обводку при фокусе */
+    box-shadow: none; /* Убираем тень */
+}
+.list-group-item-button:focus,
+.list-group-item-button:active {
+    box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.25);
+    /* Другие стили */
+}
+.btn-primary {
+    color: #fff;
+    background-color: #0d6efd;
+    border: none; /* Удаление всех границ */
+}
+.btn-large {
+    transform: scale(1.2); /* Увеличиваем размер в два раза */
+}
+
+
