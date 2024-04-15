@@ -23,4 +23,4 @@ class LessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ('id', 'subject', 'teacher', 'group', 'day_of_week', 'time_start', 'time_end')
+        fields = ('id', 'lesson_number', 'subject', 'teacher', 'group', 'day_of_week')

@@ -9,14 +9,17 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView
 
+from .functions import get_user_by_token
+
 #Получение и добавление пользователей
 class UsersView(ListCreateAPIView):
     serializer_class = UserSerializer
 
     def get(self, request):
-        users = User.objects.all()
-        serializer = self.get_serializer(users, many=True)
-        return Response({"Пользователи": serializer.data})
+        token = request.GET.get('token', None)
+        user = get_user_by_token(token)
+        serializer = self.get_serializer(user)
+        return Response({"Пользователь": serializer.data})
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

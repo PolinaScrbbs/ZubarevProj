@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from django.core.exceptions import ValidationError
 
 class Subject(models.Model):
@@ -32,48 +33,27 @@ class Group(models.Model):
         return self.title
     
 class Lesson(models.Model):
-    # Начало пар
-    START_TIME_CHOICES = (
-        ('8:30', '8:30'),
-        ('10:00', '10:00'),
-        ('11:40', '11:40'),
-        ('13:30', '13:30'),
-        ('15:00', '15:00'),
-        ('16:30', '16:30')
-    )
-
-    # Конец пар
-    END_TIME_CHOICES = (
-        ('9:50', '9:50'),
-        ('11:20', '11:20'),
-        ('13:00', '13:00'),
-        ('14:50', '14:50'),
-        ('16:20', '16:20'),
-        ('17:50', '17:50')
-    )
-
+    lesson_number = models.IntegerField(choices=[(1, 'Первая'), (2, 'Вторая'), (3, 'Третья'), (4, 'Четвёртая'), (5, 'Пятая'), (6, 'Шестая')], verbose_name='Номер пары')
     subject = models.ForeignKey(Subject, verbose_name='Предмет', on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, verbose_name='Преподаватель', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, verbose_name='Группа', on_delete=models.CASCADE)
-    day_of_week = models.IntegerField(choices=[(1, 'Понедельник'), (2, 'Вторник'), (3, 'Среда'), (4, 'Четверг'), (5, 'Пятница'), (6, 'Суббота')], verbose_name='День недели')
-    time_start = models.CharField(max_length=5, choices=START_TIME_CHOICES, verbose_name='Время начала')
-    time_end = models.CharField(max_length=5, choices=END_TIME_CHOICES, verbose_name='Время окончания')
+    day_of_week = models.IntegerField(choices=[(1, 'Понедельник'), (2, 'Вторник'), (3, 'Среда'), (4, 'Четверг'), (5, 'Пятница')], verbose_name='День недели')
     
     def clean(self):
         lessons_in_day = Lesson.objects.filter(group=self.group, day_of_week=self.day_of_week)
-
         num_lessons = lessons_in_day.count()
+        print(num_lessons)
 
-        if num_lessons > 6:
+        if num_lessons >= 4:
             raise ValidationError("Слишком много пар для этой группы на этот день недели")
         
-        empty_lessons = lessons_in_day.filter(subject=None)
-        num_empty_lessons = empty_lessons.count()
-        if num_empty_lessons < 2:
-            raise ValidationError("Должно быть как минимум две пустые пары для этой группы на этот день недели")
+        lessons_in_day = Lesson.objects.filter(group=self.group, day_of_week=self.day_of_week, lesson_number=self.lesson_number)
+        if lessons_in_day.exists():
+            raise ValidationError("Пара с таким номером уже существует в этот день недели для данной группы")
         
-        if self.time_start >= self.time_end:
-            raise ValidationError("Время начала должно быть раньше времени окончания")
+        max_lesson_number = Lesson.objects.filter(group=self.group, day_of_week=self.day_of_week).aggregate(Max('lesson_number'))['lesson_number__max']
+        if max_lesson_number is not None and self.lesson_number != max_lesson_number + 1:
+            raise ValidationError("Невозможно создать пару с номером {}. Номер следующей пары должен быть {}.".format(self.lesson_number, max_lesson_number + 1))
 
     def save(self, *args, **kwargs):
         self.full_clean()

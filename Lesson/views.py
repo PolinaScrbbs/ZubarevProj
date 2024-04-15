@@ -1,10 +1,28 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Lesson
-from .serializers import LessonSerializer
+from .models import Group, Teacher, Lesson
+from .serializers import GroupSerializer, TeacherSerializer, LessonSerializer
 
-#Добавление
+class GroupList(APIView):
+    def get(self, request, format=None):
+        try:
+            groups = Group.objects.all()
+            serializer = GroupSerializer(groups, many=True)
+            return Response(serializer.data)
+        except Teacher.DoesNotExist:
+            return Response("Группы не найдены", status=status.HTTP_404_NOT_FOUND)
+
+class TeacherList(APIView):
+    def get(self, request, format=None):
+        try:
+            teachers = Teacher.objects.all()
+            serializer = TeacherSerializer(teachers, many=True)
+            return Response(serializer.data)
+        except Teacher.DoesNotExist:
+            return Response("Преподаватели не найдены", status=status.HTTP_404_NOT_FOUND)
+
+#Добавление пар
 class LessonList(APIView):
     def post(self, request, format=None):
         serializer = LessonSerializer(data=request.data)

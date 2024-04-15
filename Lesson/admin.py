@@ -15,4 +15,4 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'teacher', 'group', 'day_of_week', 'time_start', 'time_end')
+    list_display = ('lesson_number', 'subject', 'teacher', 'group', 'day_of_week')
